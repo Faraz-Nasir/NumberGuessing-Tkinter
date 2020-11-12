@@ -29,7 +29,7 @@ def login_window():
     login=Tk()
     login.resizable(0,0)
     login.title("Login")
-    login.geometry'500x300')
+    login.geometry('500x300')
     login.config(bg="white")
 
     frame=LabelFrame(login,pady=5)
