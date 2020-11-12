@@ -1,6 +1,8 @@
 from tkinter import *
 from PIL import Image,ImageTk
 import mysql.connector
+import random
+
 #CREATING DATABASE
 mydb=mysql.connector.connect(host='localhost',user='root',passwd='root',database='numbergame_database')
 
@@ -25,6 +27,7 @@ login_btn_image=login_btn_image.resize((50,50),Image.ANTIALIAS)
 login_btn_image=ImageTk.PhotoImage(login_btn_image)
 
 def login_window():
+    root.destroy()
     global login
     login=Tk()
     login.resizable(0,0)
@@ -60,12 +63,59 @@ def login_window():
         email_name.delete(0, END)
         address_name.delete(0,END)
 
+    def new_game_window():
+        global game
+        game = Tk()
+        game.resizable(0, 0)
+        game.geometry("400x200")
+
+        new_game()
+        game.mainloop()
+
+    def destroy_button():
+
+        btn1.destroy()
+        btn2.destroy()
+        btn3.destroy()
+        new_game()
+
+    def new_game():
+        global randomnum_ans,option2,option3
+        randomnum_ans=random.randint(1,100)
+        global btn1,btn2,btn3
+        print(randomnum_ans)
+        option2 = random.randint(1, 100)
+        option3 = random.randint(1, 100)
+
+        def checkans():
+            btn1.config(bg="green")
+            btn2.config(bg="red")
+            btn3.config(bg="red")
+
+
+        btn1=Button(game,text=randomnum_ans,command=checkans,font=("Helvetica",35),bg="white")
+        btn2=Button(game,text=option2,command=checkans,font=("Helvetica",35),bg="white")
+        btn3=Button(game,text=option3,command=checkans,font=("Helvetica",35),bg="white")
+        btn1_placement=random.randint(1,3)
+
+        btn1.grid(row=0,column=btn1_placement,padx=10,pady=10)
+        btn2.grid(row=0,column=btn1_placement-1,padx=10,pady=10)
+        btn3.grid(row=0,column=btn1_placement+1,padx=10,pady=10)
+
+
+        btn5=Button(game,text="Next",bg="red",command=destroy_button)
+        btn5.grid(row=1,column=1)
+
+
+
     def add_user():
         sql_command="INSERT INTO game_name(name,address,email,phone) VALUES (%s,%s,%s,%s)"
         values=(entry_name.get(),address_name.get(),email_name.get(),phone_name.get())
         mycursor.execute(sql_command,values)
         mydb.commit()
         clear_fields()
+        login.destroy()
+        new_game_window()
 
 
     btn_logup=Button(frame,text="Logup",command=add_user)
