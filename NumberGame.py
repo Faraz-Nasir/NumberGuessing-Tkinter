@@ -1,6 +1,7 @@
 from tkinter import *
 from PIL import Image,ImageTk
 import mysql.connector
+from tkinter import messagebox
 import random
 
 #CREATING DATABASE
@@ -14,6 +15,9 @@ root.resizable(0,0)
 root.geometry('400x400')
 root.title("Number Guessing Game")
 root.config(bg="red")
+
+global score
+score=0
 
 icon_img=Image.open("C:\\Users\\faraz\\PycharmProjects\\Tkinter\\Number Guessing\\main.png")
 icon_img=icon_img.resize((200,200),Image.ANTIALIAS)
@@ -67,7 +71,7 @@ def login_window():
         global game
         game = Tk()
         game.resizable(0, 0)
-        game.geometry("400x200")
+        game.geometry("600x200")
 
         new_game()
         game.mainloop()
@@ -87,25 +91,45 @@ def login_window():
         option2 = random.randint(1, 100)
         option3 = random.randint(1, 100)
 
-        def checkans():
+        def checkans(answer):
+
+            if(answer== randomnum_ans):
+                global score
+                score+=1
+
             btn1.config(bg="green")
             btn2.config(bg="red")
             btn3.config(bg="red")
 
 
-        btn1=Button(game,text=randomnum_ans,command=checkans,font=("Helvetica",35),bg="white")
-        btn2=Button(game,text=option2,command=checkans,font=("Helvetica",35),bg="white")
-        btn3=Button(game,text=option3,command=checkans,font=("Helvetica",35),bg="white")
-        btn1_placement=random.randint(1,3)
+        btn1=Button(game,text=randomnum_ans,command=lambda: checkans(randomnum_ans),font=("Helvetica",35),bg="white")
+        btn2=Button(game,text=option2,command=lambda: checkans(option2),font=("Helvetica",35),bg="white")
+        btn3=Button(game,text=option3,command=lambda: checkans(option3),font=("Helvetica",35),bg="white")
 
-        btn1.grid(row=0,column=btn1_placement,padx=10,pady=10)
-        btn2.grid(row=0,column=btn1_placement-1,padx=10,pady=10)
-        btn3.grid(row=0,column=btn1_placement+1,padx=10,pady=10)
+        global score
+        print(score)
+
+        placement1=random.randint(0,3)
+        placement2_column=[i for i in range(0,3) if i not in [placement1]]
+        placement2=placement2_column[0]
+        placement3_column = [i for i in range(0, 3) if i not in [placement2,placement1]]
+        placement3=placement3_column[0]
 
 
+        print(placement1,placement2,placement3)
+        btn1.grid(row=0,column=placement1,padx=10,pady=10)
+        btn2.grid(row=0,column=placement2,padx=10,pady=10)
+        btn3.grid(row=0,column=placement3,padx=10,pady=10)
+
+        def score_game():
+            response=messagebox.showinfo("Score",f"Your Score is {score}")
+
+        btn4=Button(game,text="My Score",bg="red",command=score_game)
+        btn4.grid(row=1,column=1)
         btn5=Button(game,text="Next",bg="red",command=destroy_button)
-        btn5.grid(row=1,column=1)
-
+        btn5.grid(row=1,column=0)
+        btn6=Button(game,text="Exit",bg="red",command=game.destroy)
+        btn6.grid(row=1,column=2)
 
 
     def add_user():
